@@ -5,9 +5,13 @@ if (!com.napthats.bs) com.napthats.bs = {};
 
 $(document).ready(function() {
     var ns = com.napthats.bs;
-    var boardName = 'board1'; //tmp
-    var game = ns.makeGame(boardName);
+    var game = ns.makeGame($('#board_id').val());
     var UI = ns.makeUI(game.boardData);
+    var restart = function() {
+        game = ns.makeGame($('#board_id').val());
+        UI.drawBoard(game.boardData);
+        UI.showMessage(UI.state2message(game.getState()));
+    };
 
     $(document).keydown(function(event) {
         switch (event.which) {
@@ -23,9 +27,16 @@ $(document).ready(function() {
             case 37:
                 game.move(3);
                 break;
-        }
+            case 82:
+                restart();
+                break;
+         }
         UI.drawBoard(game.boardData);
         UI.showMessage(UI.state2message(game.getState()));
+    });
+
+    $('#restart').click(function() {
+        restart();
     });
 });
 

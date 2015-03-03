@@ -44,11 +44,11 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.gameState.GAME_OVER = 2;
 
     ns.makeGame = function(boardName) {
-        game.playerPos = BOARD_DATA[boardName][0];
-        game.boardData = BOARD_DATA[boardName][1];
+        game.playerPos = BOARD_DATA[boardName][0].clone();
+        game.boardData = BOARD_DATA[boardName][1].clone();
 
         game.move = function(dir) {
-           var old_pos = game.playerPos;
+            var old_pos = game.playerPos;
             var pos = game.playerPos;
             var moved = false;
              while (true) {
