@@ -36,6 +36,14 @@ if (!com.napthats.bs) com.napthats.bs = {};
             ctx.font = FONT_DEFAULT;
         };
 
+        UI.state2message = function(state) {
+            switch (state) {
+                case ns.gameState.NORMAL: return '';
+                case ns.gameState.CLEAR: return 'CLEAR!';
+                case ns.gameState.GAME_OVER: return 'GAME OVER';
+            }
+        };
+
         UI.showMessage = function(msg) {
             msg = msg.split('<').join('&lt;');
             msg = msg.split('&').join('&amp;');

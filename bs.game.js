@@ -8,8 +8,13 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var ns = com.napthats.bs;
     //Data must be rectangle.
     var BOARD_DATA = {
-        'board1': [[0, 0], [[1,0,-1,0,0],[0,0,0,0,0],[-1,0,-1,0,0]]],
+        'board1': [[0, 0], [[1,0,-1,0,-1],[0,0,0,0,0],[0,0,-1,0,0]]],
     };
+    var TILE_NONE = -1;
+    var TILE_EMPTY = 0;
+    var TILE_PLAYER = 1;
+    var TILE_MOVED = 2;
+    var DIR_SIZE = 4;
 
     var dir2deltapos = function(dir) {
         switch (dir) {
@@ -33,6 +38,11 @@ if (!com.napthats.bs) com.napthats.bs = {};
         return [true, [nextPos[0], nextPos[1]]];
     };
 
+    ns.gameState = {};
+    ns.gameState.NORMAL = 0;
+    ns.gameState.CLEAR = 1;
+    ns.gameState.GAME_OVER = 2;
+
     ns.makeGame = function(boardName) {
         game.playerPos = BOARD_DATA[boardName][0];
         game.boardData = BOARD_DATA[boardName][1];
@@ -41,9 +51,6 @@ if (!com.napthats.bs) com.napthats.bs = {};
            var old_pos = game.playerPos;
             var pos = game.playerPos;
             var moved = false;
-            console.log(dir);
-            console.log(pos[0]);
-            console.log(pos[1]);
              while (true) {
                 var res = getNextPos(pos[0], pos[1], dir);
                 if (res[0]) {moved = true;}
@@ -51,9 +58,34 @@ if (!com.napthats.bs) com.napthats.bs = {};
                 pos = res[1];
             }
             if (!moved) {return;}
-            game.boardData[old_pos[0]][old_pos[1]] = 2;
-            game.boardData[pos[0]][pos[1]] = 1;
+            game.boardData[old_pos[0]][old_pos[1]] = TILE_MOVED;
+            game.boardData[pos[0]][pos[1]] = TILE_PLAYER;
             game.playerPos = pos;
+        };
+
+        game.getState = function() {
+            var canMove = false;
+            for (var dir = 0; dir < DIR_SIZE; dir++) {
+                if (getNextPos(game.playerPos[0], game.playerPos[1], dir)[0]) {
+                    canMove = true;
+                }
+            }
+            if (canMove) {
+                return ns.gameState.NORMAL;
+            }
+            
+            var clear = true;
+            for (var x = 0; x < game.boardData.length; x++) {
+                for (var y = 0; y < game.boardData[0].length; y++) {
+                    if (game.boardData[x][y] === 0) {
+                        clear = false;
+                    }
+                }
+            }
+            if (clear) {
+                return ns.gameState.CLEAR;
+            }
+            return ns.gameState.GAME_OVER;
         };
 
         return game;

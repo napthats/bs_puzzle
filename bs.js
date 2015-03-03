@@ -25,6 +25,7 @@ $(document).ready(function() {
                 break;
         }
         UI.drawBoard(game.boardData);
+        UI.showMessage(UI.state2message(game.getState()));
     });
 });
 
