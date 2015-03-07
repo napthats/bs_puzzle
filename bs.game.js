@@ -8,9 +8,9 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var ns = com.napthats.bs;
     //Data must be rectangle.
     var BOARD_DATA = {
-        'board1' : [[0,0], '211:111:010:111:011'],
-        'board2' : [[3,0], '001201111:001111111:000101000:111111100:111101100:000001100:000001100'],
-        'board3' : [[2,0], '002101111:001111111:000101000:111111100:111101100:000001100:000001100']
+        'board1' : '211:111:010:111:011',
+        'board2' : '001201111:001111111:000101000:111111100:111101100:000001100:000001100',
+        'board3' : '002101111:001111111:000101000:111111100:111101100:000001100:000001100'
     };
     ns.tileType = {};
     ns.tileType.NONE = 0;
@@ -25,18 +25,28 @@ if (!com.napthats.bs) com.napthats.bs = {};
         for (var i = 0; i < lines.length; i++) {
             lines[i] = lines[i].split('');
             if (elem_num !== -1 && lines[i].length !== elem_num) {
-                return [];
+                return -1;
             }
             elem_num = lines[i].length;
         }
         var mat = [];
+        var player_x = -1;
+        var player_y = -1;
         for (var i = 0; i < elem_num; i++) {
             mat[i] = new Array();
             for (var j = 0; j < lines.length; j++) {
                 mat[i][j] = Number(lines[j][i]);
+                if (mat[i][j] === ns.tileType.PLAYER) {
+                    if (player_x !== -1) {
+                        //There are more than one player tile.
+                        return -1;
+                    }
+                    player_x = i;
+                    player_y = j;
+                }
             }
         }
-        return mat;
+        return [[player_x, player_y], mat];
     };
 
     var dir2deltapos = function(dir) {
@@ -67,8 +77,16 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.gameState.GAME_OVER = 2;
 
     ns.makeGame = function(boardName) {
-        game.playerPos = BOARD_DATA[boardName][0].clone();
-        game.boardData = string2boarddata(BOARD_DATA[boardName][1]);
+        var boarddata = string2boarddata(BOARD_DATA[boardName]);
+        if (boarddata === -1) {
+            console.log("Bad boarddata.");
+            game.playerPos = [0,0];
+            game.boardData = [[ns.tileType.NONE]];
+        }
+        else {
+            game.playerPos = boarddata[0];
+            game.boardData = boarddata[1];
+        }
 
         game.move = function(dir) {
             var old_pos = game.playerPos;
