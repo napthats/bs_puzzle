@@ -12,6 +12,17 @@ $(document).ready(function() {
         UI.drawBoard(game.boardData);
         UI.showMessage(UI.state2message(game.getState()));
     };
+    var undo = function() {
+        game.undo();
+        UI.drawBoard(game.boardData);
+        UI.showMessage(UI.state2message(game.getState()));
+    };
+    var redo = function() {
+        game.redo();
+        UI.drawBoard(game.boardData);
+        UI.showMessage(UI.state2message(game.getState()));
+    };
+
 
     $(document).keydown(function(event) {
         switch (event.which) {
@@ -54,7 +65,13 @@ $(document).ready(function() {
             case 82:
                 restart();
                 break;
-         }
+            case 85:
+                undo();
+                break;
+            case 73:
+                redo();
+                break;
+          }
         UI.drawBoard(game.boardData);
         UI.showMessage(UI.state2message(game.getState()));
     });

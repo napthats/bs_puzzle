@@ -17,7 +17,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.tileType.NONE = 0;
     ns.tileType.EMPTY = 1;
     ns.tileType.PLAYER = 2;
-    ns.tileType.MOVED = -1;
+    ns.tileType.MOVED = 3;
     var DIR_SIZE = 4;
     var isValidInputTileType = function(type) {
         if (type >= 0 && type <= 2) {
@@ -112,11 +112,15 @@ if (!com.napthats.bs) com.napthats.bs = {};
             game.boardData = boarddata[1];
         }
 
+        var move_log = [];
+        var undo_log = [];
         game.move = function(dir) {
+            undo_log = [];
             var old_pos = game.playerPos;
+            move_log.push(old_pos);
             var pos = game.playerPos;
             var moved = false;
-             while (true) {
+            while (true) {
                 var res = getNextPos(pos[0], pos[1], dir);
                 if (res[0]) {moved = true;}
                 else {break;}
@@ -127,6 +131,26 @@ if (!com.napthats.bs) com.napthats.bs = {};
             game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
             game.playerPos = pos;
         };
+
+        game.undo = function() {
+            if (move_log.length === 0) {return;}
+            var old_pos = game.playerPos;
+            var pos = move_log.pop();
+            undo_log.push(old_pos);
+            game.boardData[old_pos[0]][old_pos[1]] = ns.tileType.EMPTY;
+            game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
+            game.playerPos = pos;
+        };
+
+        game.redo = function() {
+            if (undo_log.length === 0) {return;}
+            var old_pos = game.playerPos;
+            var pos = undo_log.pop();
+            move_log.push(old_pos);
+            game.boardData[old_pos[0]][old_pos[1]] = ns.tileType.MOVED;
+            game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
+            game.playerPos = pos;
+         };
 
         game.getState = function() {
             var canMove = false;
