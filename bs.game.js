@@ -12,14 +12,26 @@ if (!com.napthats.bs) com.napthats.bs = {};
         'board2' : '001201111:001111111:000101000:111111100:111101100:000001100:000001100',
         'board3' : '002101111:001111111:000101000:111111100:111101100:000001100:000001100'
     };
+    var BOARD_X = 'boardX';
     ns.tileType = {};
     ns.tileType.NONE = 0;
     ns.tileType.EMPTY = 1;
     ns.tileType.PLAYER = 2;
     ns.tileType.MOVED = -1;
     var DIR_SIZE = 4;
+    var isValidInputTileType = function(type) {
+        if (type >= 0 && type <= 2) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
 
     var string2boarddata = function(str) {
+        if (str === "") {
+            return -1;
+        }
         var lines = str.split(':');
         var elem_num = -1;
         for (var i = 0; i < lines.length; i++) {
@@ -36,6 +48,9 @@ if (!com.napthats.bs) com.napthats.bs = {};
             mat[i] = new Array();
             for (var j = 0; j < lines.length; j++) {
                 mat[i][j] = Number(lines[j][i]);
+                if (!isValidInputTileType(mat[i][j])) {
+                    return -1;
+                }
                 if (mat[i][j] === ns.tileType.PLAYER) {
                     if (player_x !== -1) {
                         //There are more than one player tile.
@@ -45,6 +60,9 @@ if (!com.napthats.bs) com.napthats.bs = {};
                     player_y = j;
                 }
             }
+        }
+        if (player_x === -1) {
+            return -1;
         }
         return [[player_x, player_y], mat];
     };
@@ -77,7 +95,13 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.gameState.GAME_OVER = 2;
 
     ns.makeGame = function(boardName) {
-        var boarddata = string2boarddata(BOARD_DATA[boardName]);
+        var boarddata;
+        if (boardName === BOARD_X) {
+            boarddata = string2boarddata($('#board_data').val());
+        }
+        else {
+            boarddata = string2boarddata(BOARD_DATA[boardName]);
+        }
         if (boarddata === -1) {
             console.log("Bad boarddata.");
             game.playerPos = [0,0];
