@@ -7,8 +7,6 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var ns = com.napthats.bs;
     var CANVAS_WIDTH_DEFAULT = 640;
     var CANVAS_HEIGHT_DEFAULT = 640;
-    var BOARD_WIDTH = 10;
-    var BOARD_HEIGHT = 10;
     var TILE_SIZE = 32;
     var FONT_DEFAULT = 'normal bold 8px monospace';
 
@@ -27,12 +25,15 @@ if (!com.napthats.bs) com.napthats.bs = {};
         var chipDrawer = ns.makeChipDrawer(ctx);
 
         UI.drawBoard = function(boardData) {
+            //Set mergine.
+            ctx.canvas.width = (boardData.length + 2) * TILE_SIZE;
+            ctx.canvas.height = (boardData[0].length + 2) * TILE_SIZE;
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
             for (var y = 0; y < boardData[0].length; y++) {
                 for (var x = 0; x < boardData.length; x++) {
                     if (boardData[x][y] !== ns.tileType.NONE) {
-                        chipDrawer.drawTile(tiletype2graphicid(boardData[x][y]), x * TILE_SIZE, y * TILE_SIZE);
+                        chipDrawer.drawTile(tiletype2graphicid(boardData[x][y]), (x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
                     }
                }
             }
