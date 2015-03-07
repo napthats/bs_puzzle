@@ -12,6 +12,15 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var TILE_SIZE = 32;
     var FONT_DEFAULT = 'normal bold 8px monospace';
 
+    var tiletype2graphicid = function(type) {
+        switch(type) {
+            case ns.tileType.EMPTY : return 0;
+            case ns.tileType.PLAYER : return 1;
+            case ns.tileType.MOVED : return 2;
+            default : console.log(type); console.log(ns.tileType.PLAYER);
+        }
+    };
+
     ns.makeUI = function(initBoardData) {
         var UI = {};
         var ctx = document.createElement('canvas').getContext('2d');
@@ -22,8 +31,8 @@ if (!com.napthats.bs) com.napthats.bs = {};
 
             for (var y = 0; y < boardData[0].length; y++) {
                 for (var x = 0; x < boardData.length; x++) {
-                    if (boardData[x][y] >= 0) {
-                        chipDrawer.drawTile(boardData[x][y], x * TILE_SIZE, y * TILE_SIZE);
+                    if (boardData[x][y] !== ns.tileType.NONE) {
+                        chipDrawer.drawTile(tiletype2graphicid(boardData[x][y]), x * TILE_SIZE, y * TILE_SIZE);
                     }
                }
             }

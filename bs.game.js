@@ -8,15 +8,36 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var ns = com.napthats.bs;
     //Data must be rectangle.
     var BOARD_DATA = {
-        'board1': [[0, 0], [[1,0,-1,0,-1],[0,0,0,0,0],[0,0,-1,0,0]]],
-        'board2': [[3, 0], [[-1,-1,-1,0,0,-1,-1],[-1,-1,-1,0,0,-1,-1],[0,0,-1,0,0,-1,-1],[1,0,0,0,0,-1,-1],[-1,0,-1,0,-1,-1,-1],[0,0,0,0,0,0,0],[0,0,-1,0,0,0,0],[0,0,-1,-1,-1,-1,-1],[0,0,-1,-1,-1,-1,-1]]],
-        'board3': [[2, 0], [[-1,-1,-1,0,0,-1,-1],[-1,-1,-1,0,0,-1,-1],[1,0,-1,0,0,-1,-1],[0,0,0,0,0,-1,-1],[-1,0,-1,0,-1,-1,-1],[0,0,0,0,0,0,0],[0,0,-1,0,0,0,0],[0,0,-1,-1,-1,-1,-1],[0,0,-1,-1,-1,-1,-1]]],
+        'board1' : [[0,0], '211:111:010:111:011'],
+        'board2' : [[3,0], '001201111:001111111:000101000:111111100:111101100:000001100:000001100'],
+        'board3' : [[2,0], '002101111:001111111:000101000:111111100:111101100:000001100:000001100']
     };
-    var TILE_NONE = -1;
-    var TILE_EMPTY = 0;
-    var TILE_PLAYER = 1;
-    var TILE_MOVED = 2;
+    ns.tileType = {};
+    ns.tileType.NONE = 0;
+    ns.tileType.EMPTY = 1;
+    ns.tileType.PLAYER = 2;
+    ns.tileType.MOVED = -1;
     var DIR_SIZE = 4;
+
+    var string2boarddata = function(str) {
+        var lines = str.split(':');
+        var elem_num = -1;
+        for (var i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].split('');
+            if (elem_num !== -1 && lines[i].length !== elem_num) {
+                return [];
+            }
+            elem_num = lines[i].length;
+        }
+        var mat = [];
+        for (var i = 0; i < elem_num; i++) {
+            mat[i] = new Array();
+            for (var j = 0; j < lines.length; j++) {
+                mat[i][j] = Number(lines[j][i]);
+            }
+        }
+        return mat;
+    };
 
     var dir2deltapos = function(dir) {
         switch (dir) {
@@ -34,7 +55,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
             nextPos[1] < 0 || nextPos[1] >= game.boardData[0].length) {
             return [false, [x, y]];
         }
-        if (game.boardData[nextPos[0]][nextPos[1]] !== 0) {
+        if (game.boardData[nextPos[0]][nextPos[1]] !== ns.tileType.EMPTY) {
             return [false, [x, y]];
         }
         return [true, [nextPos[0], nextPos[1]]];
@@ -47,7 +68,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
 
     ns.makeGame = function(boardName) {
         game.playerPos = BOARD_DATA[boardName][0].clone();
-        game.boardData = BOARD_DATA[boardName][1].clone();
+        game.boardData = string2boarddata(BOARD_DATA[boardName][1]);
 
         game.move = function(dir) {
             var old_pos = game.playerPos;
@@ -60,8 +81,8 @@ if (!com.napthats.bs) com.napthats.bs = {};
                 pos = res[1];
             }
             if (!moved) {return;}
-            game.boardData[old_pos[0]][old_pos[1]] = TILE_MOVED;
-            game.boardData[pos[0]][pos[1]] = TILE_PLAYER;
+            game.boardData[old_pos[0]][old_pos[1]] = ns.tileType.MOVED;
+            game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
             game.playerPos = pos;
         };
 
@@ -79,7 +100,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
             var clear = true;
             for (var x = 0; x < game.boardData.length; x++) {
                 for (var y = 0; y < game.boardData[0].length; y++) {
-                    if (game.boardData[x][y] === 0) {
+                    if (game.boardData[x][y] === ns.tileType.EMPTY) {
                         clear = false;
                     }
                 }
