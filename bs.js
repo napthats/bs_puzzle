@@ -22,7 +22,16 @@ $(document).ready(function() {
         UI.drawBoard(game.boardData);
         UI.showMessage(UI.state2message(game.getState()));
     };
-
+    var changeNumMode = function() {
+        if ($('#num_mode').attr('checked') === 'checked') {
+            UI.setNumMode(true);
+            UI.drawBoard(game.boardData);
+        }
+        else {
+            UI.setNumMode(false);
+            UI.drawBoard(game.boardData);
+        }
+    }
 
     $(document).keydown(function(event) {
         switch (event.which) {
@@ -71,7 +80,16 @@ $(document).ready(function() {
             case 73:
                 redo();
                 break;
-          }
+            case 78:
+                if ($('#num_mode').attr('checked') === 'checked') {
+                    $('#num_mode').attr('checked', false);
+                }
+                else {
+                    $('#num_mode').attr('checked', true);
+                }
+                changeNumMode();
+                break;
+           }
         UI.drawBoard(game.boardData);
         UI.showMessage(UI.state2message(game.getState()));
     });
@@ -79,6 +97,8 @@ $(document).ready(function() {
     $('#restart').click(function() {
         restart();
     });
+
+    $('#num_mode').click(changeNumMode);
 });
 
 

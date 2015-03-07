@@ -10,12 +10,15 @@ if (!com.napthats.bs) com.napthats.bs = {};
     var TILE_SIZE = 32;
     var FONT_DEFAULT = 'normal bold 8px monospace';
 
-    var tiletype2graphicid = function(type) {
+    var tiletype2graphicid = function(type, num_mode) {
         switch(type) {
             case ns.tileType.EMPTY : return 0;
             case ns.tileType.PLAYER : return 1;
-            case ns.tileType.MOVED : return 2;
-            default : console.log(type); console.log(ns.tileType.PLAYER);
+            default :
+                if (type < 0) {
+                    if (num_mode) {return 0;}
+                    else {return 2;}
+                }
         }
     };
 
@@ -23,6 +26,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
         var UI = {};
         var ctx = document.createElement('canvas').getContext('2d');
         var chipDrawer = ns.makeChipDrawer(ctx);
+        var num_mode = false;
 
         UI.drawBoard = function(boardData) {
             //Set mergine.
@@ -33,11 +37,20 @@ if (!com.napthats.bs) com.napthats.bs = {};
             for (var y = 0; y < boardData[0].length; y++) {
                 for (var x = 0; x < boardData.length; x++) {
                     if (boardData[x][y] !== ns.tileType.NONE) {
-                        chipDrawer.drawTile(tiletype2graphicid(boardData[x][y]), (x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                        chipDrawer.drawTile(
+                            tiletype2graphicid(boardData[x][y], num_mode),
+                            (x + 1) * TILE_SIZE,
+                            (y + 1) * TILE_SIZE
+                        );
+                        if (num_mode && boardData[x][y] < 0) {
+                            chipDrawer.drawNum(- boardData[x][y], (x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                        }
                     }
                }
             }
         };
+
+        UI.setNumMode = function(f) {num_mode = f;}
 
         UI.changeMapScale = function(scale) {
             ctx.canvas.width = CANVAS_WIDTH_DEFAULT * scale;

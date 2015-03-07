@@ -16,18 +16,22 @@
     <div id="board"></div>
     <div><pre>
 矢印キー(ASDW,HJKL): 移動
-r: リスタート
 数字キー: board変更(0でinput)
+r: リスタート
+u: undo
+i: redo
+n: num_mode切り替え
     </pre></div>
     <div id="options">
+        <input type="button" id="restart" value="restart"/>
         <select name='board_id' id='board_id'>
             <option value='boardX'>input board data</option>
             <option value='board1' selected>board1</option>
             <option value='board2'>board2</option>
             <option value='board3'>board3(cannot solve?)</option>
         </select>
-        <input type="button" id="restart" value="restart"/>
         <input type="text" id="board_data" value="2010:1111:0110" style="ime-mode:disabled;"/>
+        <input type="checkbox" id="num_mode">num_mode</input>
     </div>
     <div id="message"></div>
 </html>

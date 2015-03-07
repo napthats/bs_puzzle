@@ -17,10 +17,10 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.tileType.NONE = 0;
     ns.tileType.EMPTY = 1;
     ns.tileType.PLAYER = 2;
-    ns.tileType.MOVED = 3;
+    //ns.tileType.MOVED = 3;
     var DIR_SIZE = 4;
     var isValidInputTileType = function(type) {
-        if (type >= 0 && type <= 2) {
+        if (type >= ns.tileType.NONE && type <= ns.tileType.PLAYER) {
             return true;
         }
         else {
@@ -127,7 +127,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
                 pos = res[1];
             }
             if (!moved) {return;}
-            game.boardData[old_pos[0]][old_pos[1]] = ns.tileType.MOVED;
+            game.boardData[old_pos[0]][old_pos[1]] = - move_log.length;
             game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
             game.playerPos = pos;
         };
@@ -147,7 +147,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
             var old_pos = game.playerPos;
             var pos = undo_log.pop();
             move_log.push(old_pos);
-            game.boardData[old_pos[0]][old_pos[1]] = ns.tileType.MOVED;
+            game.boardData[old_pos[0]][old_pos[1]] = - move_log.length;
             game.boardData[pos[0]][pos[1]] = ns.tileType.PLAYER;
             game.playerPos = pos;
          };
