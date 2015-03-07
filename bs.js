@@ -98,6 +98,10 @@ $(document).ready(function() {
         restart();
     });
 
+    $('#board_id').change(function() {
+        restart();
+    });
+
     $('#num_mode').click(changeNumMode);
 });
 
