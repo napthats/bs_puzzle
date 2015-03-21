@@ -9,8 +9,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
     //Data must be rectangle.
     var BOARD_DATA = {
         'board1' : '211:111:010:111:011',
-        'board2' : '001201111:001111111:000101000:111111100:111101100:000001100:000001100',
-        'board3' : '002101111:001111111:000101000:111111100:111101100:000001100:000001100'
+        'board2' : '001101111:001111111:000101000:111111100:111101100:000001100:000001100',
     };
     var BOARD_X = 'boardX';
     ns.tileType = {};
@@ -19,6 +18,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
     ns.tileType.PLAYER = 2;
     //ns.tileType.MOVED = 3;
     var DIR_SIZE = 4;
+
     var isValidInputTileType = function(type) {
         if (type >= ns.tileType.NONE && type <= ns.tileType.PLAYER) {
             return true;
@@ -61,9 +61,9 @@ if (!com.napthats.bs) com.napthats.bs = {};
                 }
             }
         }
-        if (player_x === -1) {
-            return -1;
-        }
+//        if (player_x === -1) {
+//            return -1;
+//        }
         return [[player_x, player_y], mat];
     };
 
@@ -115,6 +115,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
         var move_log = [];
         var undo_log = [];
         game.move = function(dir) {
+            if(game.playerPos[0] === -1) {return;}
             undo_log = [];
             var old_pos = game.playerPos;
             move_log.push(old_pos);
@@ -133,6 +134,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
         };
 
         game.undo = function() {
+            if(game.playerPos[0] === -1) {return;}
             if (move_log.length === 0) {return;}
             var old_pos = game.playerPos;
             var pos = move_log.pop();
@@ -143,6 +145,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
         };
 
         game.redo = function() {
+            if(game.playerPos[0] === -1) {return;}
             if (undo_log.length === 0) {return;}
             var old_pos = game.playerPos;
             var pos = undo_log.pop();
@@ -153,6 +156,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
          };
 
         game.getState = function() {
+            if(game.playerPos[0] === -1) {return ns.gameState.NORMAL;} //sould return INIT state?
             var canMove = false;
             for (var dir = 0; dir < DIR_SIZE; dir++) {
                 if (getNextPos(game.playerPos[0], game.playerPos[1], dir)[0]) {
@@ -175,6 +179,14 @@ if (!com.napthats.bs) com.napthats.bs = {};
                 return ns.gameState.CLEAR;
             }
             return ns.gameState.GAME_OVER;
+        };
+
+        game.setPlayerPos = function(x,y) {
+            if(game.playerPos[0] !== -1) {return;}
+            game.playerPos[0] = x;
+            game.playerPos[1] = y;
+            game.boardData[x][y] = ns.tileType.PLAYER;
+            return game.boardData;
         };
 
         return game;

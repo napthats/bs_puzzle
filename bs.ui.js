@@ -22,13 +22,15 @@ if (!com.napthats.bs) com.napthats.bs = {};
         }
     };
 
-    ns.makeUI = function(initBoardData) {
+    ns.makeUI = function(initBoardData, selectTile) {
         var UI = {};
         var ctx = document.createElement('canvas').getContext('2d');
         var chipDrawer = ns.makeChipDrawer(ctx);
         var num_mode = false;
+        var cur_board_data = initBoardData;
 
         UI.drawBoard = function(boardData) {
+            cur_board_data = boardData;
             //Set mergine.
             ctx.canvas.width = (boardData.length + 2) * TILE_SIZE;
             ctx.canvas.height = (boardData[0].length + 2) * TILE_SIZE;
@@ -49,6 +51,17 @@ if (!com.napthats.bs) com.napthats.bs = {};
                }
             }
         };
+
+        //Assume that the canvas is set to upperleft of window.
+        ctx.canvas.addEventListener('click', function(e) {
+            var x = Math.floor(e.clientX / TILE_SIZE) - 1;
+            var y = Math.floor(e.clientY / TILE_SIZE) - 1;
+            if (x >= 0 && x < cur_board_data.length && y >= 0 && y < cur_board_data[0].length) {
+                bd = selectTile(x,y);
+                if (bd) {UI.drawBoard(bd);}
+            }
+        },
+        false);
 
         UI.setNumMode = function(f) {num_mode = f;}
 

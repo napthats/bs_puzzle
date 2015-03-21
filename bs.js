@@ -6,7 +6,7 @@ if (!com.napthats.bs) com.napthats.bs = {};
 $(document).ready(function() {
     var ns = com.napthats.bs;
     var game = ns.makeGame($('#board_id').val());
-    var UI = ns.makeUI(game.boardData);
+    var UI = ns.makeUI(game.boardData, game.setPlayerPos);
     var restart = function() {
         game = ns.makeGame($('#board_id').val());
         UI.drawBoard(game.boardData);
