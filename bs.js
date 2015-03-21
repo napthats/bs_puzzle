@@ -55,23 +55,7 @@ $(document).ready(function() {
             case 65:
                 game.move(3);
                 break;
-            case 48:
-                $('#board_id').val('boardX');
-                restart();
-                break;
-            case 49:
-                $('#board_id').val('board1');
-                restart();
-                break;
-            case 50:
-                $('#board_id').val('board2');
-                restart();
-                break;
-            case 51:
-                $('#board_id').val('board3');
-                restart();
-                break;
-            case 82:
+           case 82:
                 restart();
                 break;
             case 85:
